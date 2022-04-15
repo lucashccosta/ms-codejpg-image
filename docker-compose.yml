@@ -1,0 +1,53 @@
+version: '3.4'
+
+services: 
+    mysql:
+        container_name: codejpg-mysql
+        image: mysql:5.7
+        environment: 
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=codejpg
+        command: mysqld --innodb-buffer-pool-size=64M
+        volumes: 
+            - mysql_db_blog:/var/lib/mysql
+            - ./.docker/mysql/my.cnf:/etc/mysql/my.cnf
+        ports:
+            - 3307:3306
+        networks: 
+            - codejpg
+    
+    nginx:
+        container_name: codejpg-nginx
+        image: nginx:alpine
+        volumes: 
+            - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./src:/app
+        ports: 
+            - 90:80
+        networks: 
+            - codejpg
+
+    app:
+        container_name: codejpg-app
+        build: 
+            dockerfile: Dockerfile
+            context: .
+            args:
+                - APP_ENV=dev
+        env_file: 
+            - ./src/.env
+        volumes: 
+            - ./src:/app
+            - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        networks: 
+            - codejpg
+        depends_on: 
+            - mysql
+            - nginx
+        
+networks: 
+    codejpg:
+        driver: bridge
+
+volumes: 
+    mysql_db_codejpg:
