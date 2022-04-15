@@ -9,7 +9,7 @@ services:
             - MYSQL_DATABASE=codejpg
         command: mysqld --innodb-buffer-pool-size=64M
         volumes: 
-            - mysql_db_blog:/var/lib/mysql
+            - mysql_db_codejpg:/var/lib/mysql
             - ./.docker/mysql/my.cnf:/etc/mysql/my.cnf
         ports:
             - 3307:3306
