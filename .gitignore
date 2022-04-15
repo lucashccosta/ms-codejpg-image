@@ -1,0 +1,7 @@
+.vscode
+.env
+composer.phar
+composer.lock
+coverage/*
+vendor/
+.phpunit.result.cache
